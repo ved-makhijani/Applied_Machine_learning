@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Attendance System - Scan Station</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes pulse-red {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        .animate-pulse-red { animation: pulse-red 1.5s infinite; }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen flex flex-col justify-between font-sans">
+
+    <header class="bg-gray-800 border-b border-gray-700 px-6 py-4 flex justify-between items-center">
+    <h1 class="text-xl font-bold tracking-wide text-indigo-400">🏢 Face Recognition Station</h1>
+    <div class="flex items-center gap-3">
+        <button onclick="triggerRegistrationForm()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2 px-4 rounded-lg transition text-sm">
+            Register
+        </button>
+        <button onclick="openManageDrawer()" class="bg-gray-700 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded-lg transition text-sm">
+            Manage Employees
+        </button>
+        <span class="w-3 h-3 bg-green-500 rounded-full animate-ping ml-2"></span>
+        <span class="text-sm text-gray-400 font-medium">Scanning Live...</span>
+    </div>
+</header>
+
+<main class="flex-grow p-6 grid grid-cols-12 gap-6">
+
+        <section class="col-span-5 flex flex-col gap-4">
+            <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 shadow-lg">
+                <h2 class="text-sm font-semibold uppercase tracking-wider text-gray-400 mb-3">Live Viewport</h2>
+
+                <div class="relative aspect-video bg-gray-950 rounded-lg overflow-hidden flex items-center justify-center border border-gray-800">
+                    <div id="webcam-placeholder" class="absolute inset-0 bg-gradient-to-br from-gray-900 to-indigo-950 flex flex-col items-center justify-center text-center p-4">
+                        <svg class="w-16 h-16 text-indigo-500 mb-2 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                        <p class="text-gray-400 font-medium">Webcam Feed Engaged</p>
+                    </div>
+
+                    <div id="face-box" class="absolute border-2 border-indigo-400 rounded-md transition-all duration-300 hidden" style="top: 20%; left: 35%; width: 30%; height: 55%;">
+                        <span id="face-box-label" class="absolute -top-6 left-0 bg-indigo-400 text-gray-900 text-xs font-bold px-1.5 py-0.5 rounded shadow">FACE TARGET</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="col-span-7 flex flex-col gap-4">
+            <div id="idle-notice" class="bg-gray-800/50 border border-dashed border-gray-700 rounded-xl p-8 text-center flex flex-col items-center justify-center flex-grow">
+                <p class="text-gray-400">Position your face within the camera frame to clock in.</p>
+            </div>
+
+            <div id="insights-panel" class="hidden flex-col gap-4 flex-grow">
+
+                <div id="card-alert" class="p-5 rounded-xl border transition duration-200 shadow-lg">
+                    <div class="flex justify-between items-start">
+                        <div class="w-full">
+                            <h3 id="txt-alert-title" class="text-xs font-semibold uppercase tracking-wider mb-1">System Notice</h3>
+                            <div class="flex justify-between items-center">
+                                <p id="txt-alert-status" class="text-2xl font-bold text-white">Analyzing...</p>
+                                <button id="btn-inline-register" onclick="triggerRegistrationForm()" class="hidden bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold px-3 py-1.5 rounded-md transition shadow">
+                                    Register Person Now
+                                </button>
+                            </div>
+                            <p id="txt-alert-details" class="text-sm text-gray-400 mt-2">Processing biometric variables...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="card-liveness" class="bg-gray-800 p-5 rounded-xl border border-gray-700 shadow-lg flex justify-between items-center">
+                    <div>
+                        <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">Anti-Spoofing Analytics</h3>
+                        <p id="txt-liveness-desc" class="text-lg font-bold">Evaluating framework textures...</p>
+                    </div>
+                    <div id="badge-liveness" class="font-black tracking-wide text-sm px-4 py-2 rounded-lg bg-gray-900 border border-gray-700">
+                        --
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <div id="registration-drawer" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 transition-opacity duration-300 opacity-0 pointer-events-none flex justify-end">
+        <div class="bg-gray-800 w-full max-w-md h-full p-6 shadow-2xl flex flex-col justify-between border-l border-gray-700 transform translate-x-full transition-transform duration-300">
+            <div>
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold text-white">Register Profile</h3>
+                    <button onclick="closeRegistrationDrawer()" class="text-gray-400 hover:text-white text-2xl font-bold">&times;</button>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider font-semibold text-gray-400 mb-1">Full Name</label>
+                        <input id="reg-name" type="text" placeholder="Jane Doe" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider font-semibold text-gray-400 mb-1">Employee ID</label>
+                        <input id="reg-id" type="text" placeholder="EMP-8392" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-indigo-500">
+                    </div>
+                    <p class="text-xs text-gray-500">Your current camera frame will be captured and added to the recognition database.</p>
+                </div>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="closeRegistrationDrawer()" class="flex-1 bg-gray-700 text-white py-3 rounded-lg text-sm">Cancel</button>
+                <button onclick="submitRegistrationLive()" class="flex-1 bg-green-600 text-white py-3 rounded-lg text-sm font-semibold">Save Profile</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Employee management drawer -->
+    <div id="manage-drawer" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 transition-opacity duration-300 opacity-0 pointer-events-none flex justify-end">
+        <div class="bg-gray-800 w-full max-w-md h-full p-6 shadow-2xl flex flex-col border-l border-gray-700 transform translate-x-full transition-transform duration-300">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-white">Registered Employees</h3>
+                <button onclick="closeManageDrawer()" class="text-gray-400 hover:text-white text-2xl font-bold">&times;</button>
+            </div>
+            <div id="employee-list" class="space-y-2 overflow-y-auto flex-grow">
+                <p class="text-gray-500 text-sm">Loading...</p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-gray-950 border-t border-gray-800 p-4">
+        <div class="max-w-4xl mx-auto flex items-center justify-center gap-4">
+            <p class="text-xs text-gray-500">Live backend connected via Colab · real-time face, emotion &amp; liveness inference</p>
+        </div>
+    </footer>
+
+    <!-- Live backend controller -->
+    <script src="app.js"></script>
+</body>
+</html>
