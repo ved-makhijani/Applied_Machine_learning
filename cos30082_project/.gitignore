@@ -1,0 +1,10 @@
+# Datasets (too large for git)
+*.zip
+comp_data/
+datasets/
+__pycache__/
+.ipynb_checkpoints/
+*.pyc
+# Optional: uncomment to exclude large model files and use Git LFS instead
+# *.h5
+# *.keras

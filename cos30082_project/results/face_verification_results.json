@@ -1,0 +1,10 @@
+{
+  "dataset": "11-785 HW2P2 (4000 identities, trained on 500-identity subset)",
+  "num_pairs": 8805,
+  "unique_images": 9355,
+  "classification_auc_cosine": 0.7827,
+  "classification_auc_euclidean": 0.7827,
+  "triplet_auc_cosine": 0.7935,
+  "triplet_auc_euclidean": 0.7935,
+  "best": "Triplet (cosine) 0.7935"
+}
