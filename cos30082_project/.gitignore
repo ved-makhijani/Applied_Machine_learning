@@ -9,6 +9,14 @@ venv/
 .venv/
 cos30082_project/backend/venv/
 employee_database.json
+.DS_Store
+.DS_Store?
+._*
+~$*
+*.tmp
+*.zip
+.ipynb_checkpoints/
+EOF
 # Optional: uncomment to exclude large model files and use Git LFS instead
 # *.h5
 # *.keras
