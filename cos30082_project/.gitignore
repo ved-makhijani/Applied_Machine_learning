@@ -5,6 +5,10 @@ datasets/
 __pycache__/
 .ipynb_checkpoints/
 *.pyc
+venv/
+.venv/
+cos30082_project/backend/venv/
+employee_database.json
 # Optional: uncomment to exclude large model files and use Git LFS instead
 # *.h5
 # *.keras
